@@ -3,8 +3,6 @@
 // #include "imgproc.h"
 // #include  "/usr/include/opencv2/imgproc/imgproc.hpp"
 
-
-#include  <vector>
 #include  <iostream>
 // #include  <iomanip>
 
@@ -73,7 +71,7 @@ void draw_face(Mat dst) {
 
     // Draw face outline
     ellipse(faceOutline, Point(sw/2, sh/2), Size(faceW, faceH), 0, 0, 360, color, thickness, CV_AA);
-    cout << "Scalar color is: " << color;
+    // cout << "Scalar color is: " << color;
 
     // 2 eye arcs 
     int eyeW = faceW * 23/100;
@@ -210,11 +208,18 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
         Mat edgeMask = mask.clone(); // Keep a copy of the edge mask.
         // "maskPlusBorder" is initialized with edges to block floodFill().
         for (int i=0; i< NUM_SKIN_POINTS; i++) {
-        floodFill(yuv, maskPlusBorder, skinPts[i], Scalar(), NULL,
-        lowerDiff, upperDiff, flags);
+            floodFill(yuv, maskPlusBorder, skinPts[i], Scalar(), NULL,
+            lowerDiff, upperDiff, flags);
+        }
+        mask -= edgeMask;
 
-        // imshow("yuv", yuv);
-}
+        int Red = 0;
+        int Green = 0;
+        int Blue = 0;
+        add(smallImg, Scalar(Blue, Green, Red), smallImg, mask);
+
+        imshow("smallImg", smallImg);
+        // imshow("yuv", edgeMask);
     }
     // Mat bigImg = Mat(size, CV_8U);
     resize(smallImg, srcColor, size, 0, 0, INTER_LINEAR);
