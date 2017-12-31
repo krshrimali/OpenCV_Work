@@ -7,8 +7,8 @@
 // #include  <iomanip>
 // #include <cstdlib>
 
-using namespace std;
-using namespace cv;
+// using namespace std;
+// using namespace cv;
 
 // Function declaration
 void changeQuantisationGray(Mat, int);
