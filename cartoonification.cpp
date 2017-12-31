@@ -232,6 +232,7 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
     // return mask_;
 }
 
+/* Code referred from Master OpenCV Book */
 void removePepperNoise(Mat &mask)
 {
     // For simplicity, ignore the top & bottom row border.
