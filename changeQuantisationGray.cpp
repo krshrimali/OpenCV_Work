@@ -7,8 +7,9 @@
 #include  <iomanip>
 #include <cstdlib>
 
-// using namespace std;
-// using na2mespace cv;
+// namespace for std and cv
+using namespace std;
+using na2mespace cv;
 
 // Function declaration
 void changeQuantisationGray(Mat, int);
