@@ -7,7 +7,6 @@
 #include  <iomanip>
 #include <cstdlib>
 
-// namespace for std and cv
 using namespace std;
 using na2mespace cv;
 
@@ -40,19 +39,10 @@ int main(int argc, char** argv) {
         // create blank image that we will draw into
         imshow("original", cameraFrame);
         Size size = cameraFrame.size();
-<<<<<<< HEAD
-        // Mat gray = Mat(size, CV_8UC1);
-        // cvtColor(cameraFrame, gray, CV_BGR2GRAY);
-    //         Mat smallImg = Mat(smallSize, CV_8UC3);
-    // resize(srcColor, smallImg, smallSize, 0, 0, INTER_LINEAR);
+        
 
         Mat gray;
         resize(cameraFrame, gray, Size(cameraFrame.cols, cameraFrame.rows));
-=======
-        Mat gray = Mat(size, CV_8UC1);
-        cvtColor(cameraFrame, gray, CV_BGR2GRAY);
-        
->>>>>>> b41b09e9a679ad32b359d1eb0a13808a4b86c4cc
         changeQuantisationGray(gray, 8);
         imshow("New", gray);
 
@@ -62,13 +52,8 @@ int main(int argc, char** argv) {
 }
 
 void changeQuantisationGray(Mat image, int num_bits) {
-<<<<<<< HEAD
     image = Mat(image.size(), CV_8UC1);
     assert( (image.type() == CV_8UC1) && (num_bits >= 1) && (num_bits <= 8) );
-    cout << "Check" << endl;
-=======
-    assert( (image.type() == CV_8UC1) && (num_bits >= 1) && (num_bits <= 8) );
->>>>>>> b41b09e9a679ad32b359d1eb0a13808a4b86c4cc
     uchar mask = 0xFF << (8 - num_bits);
     for(int row = 0; row < image.rows; row++) {
         for(int col = 0; col < image.cols; col++) {
