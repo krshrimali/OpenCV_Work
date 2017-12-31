@@ -12,7 +12,7 @@ using namespace std;
 using namespace cv;
 
 // Function declaration
-void cartoonifyImage(Mat srcColor, Mat dst, int);
+void cartoonifyImage(Mat, Mat, int, int);
 // void evilify(Mat src, Mat dst);
 void draw_face(Mat dst);
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         // create blank image that we will draw into
         Mat displayedFrame(cameraFrame.size(), CV_8UC3); // 8 bit unsigned, 3 channels
         // Mat newdisplayFrame(cameraFrame.size(), CV_8UC3);
-        cartoonifyImage(cameraFrame, displayedFrame, 0);
+        cartoonifyImage(cameraFrame, displayedFrame, 0, 1);
         draw_face(displayedFrame);
         // evilify(cameraFrame, newdisplayFrame);
 
@@ -98,11 +98,25 @@ void draw_face(Mat dst) {
     // draw bottom of left eye
     ellipse(faceOutline, Point(sw/2 + eyeX, sh/2 - eyeY - eyeYshift), eyeSize, 0, 0+eyeA, 180-eyeA, color 
     , thickness, CV_AA);
+
+    // Bottom lip of mouth
+    int mouthY = faceH * 48/100;
+    int mouthW = faceW * 45/100;
+    int mouthH = faceH * 6/100;
+    ellipse(faceOutline, Point(sw/2, sh/2 + mouthY), Size(mouthW, mouthH), 0, 0, 180, color,
+    thickness, CV_AA);
     
+    // put text
+    int fontFace = FONT_HERSHEY_COMPLEX;
+    float fontScale = 1.0f;
+    int fontThickness = 2;
+    char* szMsg = "Put your face here";
+    putText(faceOutline, szMsg, Point(sw * 23/100, sh * 10/100), fontFace, fontScale, color,
+    fontThickness, CV_AA);
     // overlay with alpha value
     addWeighted(dst, 1.0, faceOutline, 0.7, 0, dst, CV_8UC3);
 }
-void cartoonifyImage(Mat srcColor, Mat dst, int evilify) {
+void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
     Mat gray; // make gray image - blank
     cvtColor(srcColor, gray, CV_BGR2GRAY);
 
@@ -154,6 +168,54 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify) {
         bilateralFilter(tmp, smallImg, ksize, sigmaColor, sigmaSpace);
     }
 
+    if(alienMode) {
+        Mat yuv = Mat(smallSize, CV_8UC3);
+        cvtColor(smallImg, yuv, CV_BGR2YCrCb);
+
+        int sw = smallSize.width;
+        int sh = smallSize.height;
+        Mat mask, maskPlusBorder;
+        maskPlusBorder = Mat::zeros(sh + 2, sw + 2, CV_8UC1);
+        mask = maskPlusBorder(Rect(1, 1, sw, sh));
+
+        resize(edges, mask, smallSize);
+        // imshow("edges4", edges);
+        // imshow("mask5", mask);
+        const int EDGES_THRESHOLD = 80;
+        threshold(mask, mask, EDGES_THRESHOLD, 255, THRESH_BINARY);
+        dilate(mask, mask, Mat());
+        erode(mask, mask, Mat());
+
+        int const NUM_SKIN_POINTS = 6;
+        Point skinPts[NUM_SKIN_POINTS];
+        skinPts[0] = Point(sw/2, sh/2 - sh/6);
+        skinPts[1] = Point(sw/2 - sw/11, sh/2 - sh/6);
+        skinPts[2] = Point(sw/2 + sw/11, sh/2 - sh/6);
+        skinPts[3] = Point(sw/2, sh/2 + sh/16);
+        skinPts[4] = Point(sw/2 - sw/9, sh/2 + sh/16);
+        skinPts[5] = Point(sw/2 + sw/9, sh/2 + sh/16);
+
+        const int LOWER_Y = 60;
+        const int UPPER_Y = 80;
+        const int LOWER_Cr = 25;
+        const int UPPER_Cr = 15;
+        const int LOWER_Cb = 20;
+        const int UPPER_Cb = 15;
+        Scalar lowerDiff = Scalar(LOWER_Y, LOWER_Cr, LOWER_Cb);
+        Scalar upperDiff = Scalar(UPPER_Y, UPPER_Cr, UPPER_Cb);
+
+        const int CONNECTED_COMPONENTS = 4; // To fill diagonally, use 8.
+        const int flags = CONNECTED_COMPONENTS | FLOODFILL_FIXED_RANGE \
+        | FLOODFILL_MASK_ONLY;
+        Mat edgeMask = mask.clone(); // Keep a copy of the edge mask.
+        // "maskPlusBorder" is initialized with edges to block floodFill().
+        for (int i=0; i< NUM_SKIN_POINTS; i++) {
+        floodFill(yuv, maskPlusBorder, skinPts[i], Scalar(), NULL,
+        lowerDiff, upperDiff, flags);
+
+        // imshow("yuv", yuv);
+}
+    }
     // Mat bigImg = Mat(size, CV_8U);
     resize(smallImg, srcColor, size, 0, 0, INTER_LINEAR);
     memset((char*)dst.data, 0, dst.step * dst.rows);
