@@ -3,9 +3,9 @@
 // #include "imgproc.h"
 // #include  "/usr/include/opencv2/imgproc/imgproc.hpp"
 
-#include  <iostream>
-#include  <iomanip>
-#include <cstdlib>
+// #include  <iostream>
+// #include  <iomanip>
+// #include <cstdlib>
 
 using namespace std;
 using namespace cv;
