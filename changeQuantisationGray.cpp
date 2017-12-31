@@ -11,11 +11,7 @@ using namespace std;
 using namespace cv;
 
 // Function declaration
-void cartoonifyImage(Mat, Mat, int, int);
-// void evilify(Mat src, Mat dst);
-void removePepperNoise(Mat &mask);
-void draw_face(Mat dst);
-
+void changeQuantisationGray(Mat, int);
 int main(int argc, char** argv) {
     int cameraNo = 0;
     if(argc > 1)
@@ -42,21 +38,24 @@ int main(int argc, char** argv) {
         }
         // create blank image that we will draw into
         imshow("original", cameraFrame);
-        changeQuantisationGray(cameraFrame, 8);
-        imshow("New", cameraFrame);
+        Size size = cameraFrame.size();
+        Mat gray = Mat(size, CV_8UC1);
+        cvtColor(cameraFrame, gray, CV_BGR2GRAY);
+        
+        changeQuantisationGray(gray, 8);
+        imshow("New", gray);
 
         char keyPress = waitKey(20);
         if(keyPress == 27) break;
     }
 }
 
-void changeQuantisationGray(Mat cameraFrame, int num_bits) {
+void changeQuantisationGray(Mat image, int num_bits) {
     assert( (image.type() == CV_8UC1) && (num_bits >= 1) && (num_bits <= 8) );
     uchar mask = 0xFF << (8 - num_bits);
     for(int row = 0; row < image.rows; row++) {
         for(int col = 0; col < image.cols; col++) {
-            image.at<uchar>(row, col) = 
-                                        image.at<uchar>(row, col) & mask;
+            image.at<uchar>(row, col) = image.at<uchar>(row, col) & mask;
         }   
     }
 }

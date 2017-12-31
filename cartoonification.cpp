@@ -40,10 +40,11 @@ int main(int argc, char** argv) {
             exit(1);
         }
         // create blank image that we will draw into
+        imshow("original", cameraFrame);
         Mat displayedFrame(cameraFrame.size(), CV_8UC3); // 8 bit unsigned, 3 channels
         // Mat newdisplayFrame(cameraFrame.size(), CV_8UC3);
         cartoonifyImage(cameraFrame, displayedFrame, 0, 1);
-        draw_face(displayedFrame);
+        // draw_face(displayedFrame);
         // evilify(cameraFrame, newdisplayFrame);
 
         // imshow("Evilifier", newdisplayFrame);
@@ -116,12 +117,16 @@ void draw_face(Mat dst) {
     addWeighted(dst, 1.0, faceOutline, 0.7, 0, dst, CV_8UC3);
 }
 void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
+    // Median Blurring and grayscaling
+
     Mat gray; // make gray image - blank
     cvtColor(srcColor, gray, CV_BGR2GRAY);
-
+    // imshow("grayscaled", gray);
     const int MEDIAN_BLUR_FILTER_SIZE = 7;
     medianBlur(gray, gray, MEDIAN_BLUR_FILTER_SIZE);
-
+    
+    // imshow("blurred_image", gray);
+    
     Size size = srcColor.size();
     Mat masking = Mat(size, CV_8U);
     Mat edges = Mat(size, CV_8U);
@@ -144,8 +149,10 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
         Laplacian(gray, edges, CV_8U, LAPLACIAN_FILTER_SIZE);
         // imshow("edges_2", edges);
         // Mat masking;
+        // imshow("laplacian", edges);
         const int EDGES_THRESHOLD = 80;
         threshold(edges, masking, EDGES_THRESHOLD, 255, THRESH_BINARY_INV);
+        // imshow("thresholded", masking);
         removePepperNoise(masking);
         // imshow("edges_3", masking);
     }
@@ -161,11 +168,12 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
     int repetitions = 7;
 
     for(int i = 0; i<repetitions; i++) {
-        int ksize=21;
+        int ksize=9;
         double sigmaColor = 9;
         double sigmaSpace = 7;
         bilateralFilter(smallImg, tmp, ksize, sigmaColor, sigmaSpace);
         bilateralFilter(tmp, smallImg, ksize, sigmaColor, sigmaSpace);
+        imshow("Filtered", smallImg);
     }
 
     if(alienMode) {
