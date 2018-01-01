@@ -14,7 +14,10 @@ using namespace cv;
 void changeQuantisationGray(Mat&, int);
 
 // For sampling
-void sampling_higher_resolution(Mat &image);
+void sampling_higher_resolution(Mat&, float);
+
+// invert color
+void invert_color(Mat& src, Mat& dst);
 
 int main(int argc, char** argv) {
     int cameraNo = 0;
@@ -48,7 +51,15 @@ int main(int argc, char** argv) {
         Mat gray;
         resize(cameraFrame, gray, Size(cameraFrame.cols, cameraFrame.rows));
         // changeQuantisationGray(gray, 8);
-        sampling_higher_resolution(cameraFrame);
+        Mat displayFrame = Mat(size, CV_8UC3);
+        invert_color(cameraFrame, displayFrame);
+
+        // float resolution_count = 2.0; // or cin >> resolution_count;
+        if(argc > 1) {
+            float resolution_count = atof(argv[1]);
+            cout << resolution_count << endl;
+            sampling_higher_resolution(cameraFrame, resolution_count);
+        }
         imshow("New", gray);
 
         char keyPress = waitKey(20);
@@ -69,9 +80,22 @@ void changeQuantisationGray(Mat &image, int num_bits) {
     imshow("img", image);
 }
 
-void sampling_higher_resolution(Mat &image) {
+void sampling_higher_resolution(Mat &image, float resolution_count) {
     Size size = image.size();
     Mat higher_image = Mat(size, CV_8UC3);
-    resize(image, higher_image, Size(image.cols * 2, image.rows * 2));
+    resize(image, higher_image, Size(image.cols * resolution_count, image.rows * resolution_count));
     imshow("higher image", higher_image);
+}
+
+void invert_color(Mat& src, Mat& dst) {
+    CV_Assert ( src.type() == CV_8UC3 );
+    dst = src.clone();
+    for(int row=0; row<src.rows; row++) {
+        for(int col=0; col<src.cols; col++) {
+            for(int channel=0; channel<src.channels(); channel++) {
+                dst.at<Vec3b>(row,col)[channel] = 255 - src.at<Vec3b>(row,col)[channel];
+            }
+        }
+    }
+    imshow("dst", dst);
 }
