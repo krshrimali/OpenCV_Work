@@ -13,6 +13,9 @@ using namespace cv;
 // Function declaration
 void changeQuantisationGray(Mat&, int);
 
+// For sampling
+void sampling_higher_resolution(Mat &image);
+
 int main(int argc, char** argv) {
     int cameraNo = 0;
     if(argc > 1)
@@ -44,7 +47,8 @@ int main(int argc, char** argv) {
 
         Mat gray;
         resize(cameraFrame, gray, Size(cameraFrame.cols, cameraFrame.rows));
-        changeQuantisationGray(gray, 8);
+        // changeQuantisationGray(gray, 8);
+        sampling_higher_resolution(cameraFrame);
         imshow("New", gray);
 
         char keyPress = waitKey(20);
@@ -56,11 +60,18 @@ void changeQuantisationGray(Mat &image, int num_bits) {
     image = Mat(image.size(), CV_8UC1);
     assert( (image.type() == CV_8UC1) && (num_bits >= 1) && (num_bits <= 8) );
     uchar mask = 0xFF << (8 - num_bits);
-    
+
     for(int row = 0; row < image.rows; row++) {
         for(int col = 0; col < image.cols; col++) {
             image.at<uchar>(row, col) = image.at<uchar>(row, col) & mask;
         }   
     }
     imshow("img", image);
+}
+
+void sampling_higher_resolution(Mat &image) {
+    Size size = image.size();
+    Mat higher_image = Mat(size, CV_8UC3);
+    resize(image, higher_image, Size(image.cols * 2, image.rows * 2));
+    imshow("higher image", higher_image);
 }
