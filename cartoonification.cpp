@@ -16,7 +16,7 @@ void removePepperNoise(Mat &mask);
 void draw_face(Mat dst);
 
 int main(int argc, char** argv) {
-    int cameraNo = 0;
+    int cameraNo = 0; // default
     if(argc > 1)
         cameraNo = atoi(argv[1]); // convert character to int for cameraNo
     // get access to camera
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         imshow("original", cameraFrame);
         Mat displayedFrame(cameraFrame.size(), CV_8UC3); // 8 bit unsigned, 3 channels
         // Mat newdisplayFrame(cameraFrame.size(), CV_8UC3);
-        cartoonifyImage(cameraFrame, displayedFrame, 0, 1);
+        cartoonifyImage(cameraFrame, displayedFrame, 0, 0);
         // draw_face(displayedFrame);
         // evilify(cameraFrame, newdisplayFrame);
 
@@ -227,7 +227,6 @@ void cartoonifyImage(Mat srcColor, Mat dst, int evilify, int alienMode) {
         int Green = 0;
         int Blue = 0;
         add(smallImg, Scalar(Blue, Green, Red), smallImg, mask);
-
         // imshow("smallImg", smallImg);
         // imshow("yuv", edgeMask);
     }

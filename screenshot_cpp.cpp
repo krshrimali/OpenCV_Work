@@ -1,5 +1,5 @@
 #include <opencv2/opencv.hpp>
-#include <X11/Xlib.h>
+#include <X11/Xlib.h> // screenshot
 #include <X11/Xutil.h>
 #include <cstdint>
 #include <cstring>
