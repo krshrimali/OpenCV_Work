@@ -1,3 +1,8 @@
+// Program to convert image to pixel matrix
+// Experiments on blurred images (mean blur) - to understand it's working and effects on pixel intensity
+// Credits: Kushashwa Ravi Shrimali
+// Dr. Shyama Prasad Mukherjee International Institute of Information Technology, Naya Raipur
+// Contact: kushashwa16100@iiitnr.edu.in
 #include "cv.h"
 #include <opencv2/opencv.hpp>
 #include "highgui.h"
