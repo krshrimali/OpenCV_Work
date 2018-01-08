@@ -20,7 +20,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
     if ( event == EVENT_LBUTTONDOWN )
     {
-        cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+        // cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
 
         // Init your rect
         base.x = x;
@@ -29,7 +29,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
         r.y = y;
         r.width = 0;
         r.height = 0;
-        cout << "Vector: " << r << endl;
+        // cout << "Vector: " << r << endl;
         bDraw = true;
     }
     else if ( event == EVENT_MOUSEMOVE )
@@ -58,7 +58,9 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
         // Refresh
         working = layer.clone();
-        cout << "Vector: " << r << endl;
+        cout << r.x << endl;
+        cout << r.y << endl;
+        // cout << "Vector: " << r << endl;
         rectangle(working, r, Scalar(0,255,0));
         imshow("My Window", working);
     }
@@ -68,16 +70,41 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
         // Save rect, draw it on layer
         rects.push_back(r);
+        cout << r << endl;
         rectangle(layer, r, Scalar(0,255,255));
-
+        Rect rec(r.x, r.y, r.width, r.height);
         r = Rect();
         bDraw = false;
-
         // Refresh
         working = layer.clone();
-        cout << "Vector: " << r << endl;
+        // cout << "Vector: " << r << endl;
         rectangle(working, r, Scalar(0,255,0));
-        imshow("My Window", working);
+        // imshow("My Window", working);
+        Mat dst = working(rec);
+        Mat gray_src;
+        cvtColor(working, gray_src, COLOR_RGB2GRAY);
+        // play with roi image now
+        CvMat* mat = cvCreateMat( dst.rows, dst.cols, CV_32FC1 );
+        cout << dst.rows << endl;
+        cout << dst.cols << endl;
+
+        int sum = 0;
+        for(int row = 0; row < dst.rows; row++) {
+          for(int col = 0; col < dst.cols; col++) {
+            Vec3b intensity = dst.at<Vec3b>(row, col);
+
+            int element = (int)intensity.val[0];
+            sum += element;
+            // cout << element << endl;
+          }
+        }
+        float avg = (float)sum / (dst.rows * dst.cols);
+        cout << avg << endl;
+
+        Mat result;
+        threshold(gray_src, result, avg, 255, THRESH_BINARY_INV);
+        imshow("My Window", dst);
+        imshow("New Window", result);
     }
 }
 
