@@ -80,14 +80,20 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
         // cout << "Vector: " << r << endl;
         rectangle(working, r, Scalar(0,255,0));
         // imshow("My Window", working);
-        Mat dst = working(rec);
+
         Mat gray_src;
         cvtColor(working, gray_src, COLOR_RGB2GRAY);
         // play with roi image now
+
+        Mat blur_image;
+        for ( int i = 1; i < 31; i = i + 2 )
+        {
+          blur( gray_src, blur_image, Size( i, i ), Point(-1,-1) );
+        }
+        Mat dst = blur_image(rec);
         CvMat* mat = cvCreateMat( dst.rows, dst.cols, CV_32FC1 );
         cout << dst.rows << endl;
         cout << dst.cols << endl;
-
         int sum = 0;
         for(int row = 0; row < dst.rows; row++) {
           for(int col = 0; col < dst.cols; col++) {
@@ -100,7 +106,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
         }
         float avg = (float)sum / (dst.rows * dst.cols);
         cout << avg << endl;
-
+        
         Mat result;
         threshold(gray_src, result, avg, 255, THRESH_BINARY_INV);
         imshow("My Window", dst);
