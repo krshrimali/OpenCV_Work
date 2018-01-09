@@ -113,9 +113,9 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
         if(cartoonIF){
           Mat cartoonififed_image = Mat(dst_non_gray.size(), CV_32FC3);
-          cartoonifyImage(dst_non_gray, cartoonififed_image, 0, 0);
+          cartoonifyIvimmage(dst_non_gray, cartoonififed_image, 0, 0);
         }
-        // threshIF
+        // threshIF -
         if(threshIF) {
           CvMat* mat = cvCreateMat( dst.rows, dst.cols, CV_32FC1 );
           cout << dst.rows << endl;
