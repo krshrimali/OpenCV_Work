@@ -19,7 +19,7 @@ learopencv and Kushashwa Ravi Shrimali
 #include <sys/time.h>
 
 // to verify data types of image objects
-#include <typeinfo>
+// #include <typeinfo>
 
 using namespace cv;
 using namespace std;
@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
     // read the image in color mode
     // copy the read image to img, OpenCV Transparent API way
     imread(argv[1], IMREAD_COLOR).copyTo(img); 
-    UMat img2 = convert_mat_UMat(img);
-    cout << typeid(img2).name() << endl;
+    // UMat img2 = convert_mat_UMat(img);
+    // cout << typeid(img2).name() << endl;
 
 
     // resize the image, optional, if higher resolution
@@ -71,8 +71,7 @@ int main(int argc, char** argv) {
     double endT = (double)getTickCount();
     cout << endT/getTickFrequency()<< endl;
     cout << "Time taken: " << (endT - startT)/getTickFrequency() << endl;
-    waitKey(0);
-    
+    waitKey(0); 
 }
 
 // flags - ?
