@@ -15,6 +15,8 @@ learopencv and Kushashwa Ravi Shrimali
  */
 #include <opencv2/opencv.hpp>
 #include <iostream>
+// for recording time
+#include <sys/time.h>
 
 // to verify data types of image objects
 #include <typeinfo>
@@ -26,17 +28,26 @@ using namespace std;
 UMat convert_mat_UMat(Mat);
 UMat convert_mat_UMat_copy(Mat);
 
+// linux alternate to getTickCount()
+/*unsigned getTickCount() {
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0) 
+        return 0;
+    return (tv.tv_sec * 1000) + (tv.tv_sec/1000);
+}*/
+
 int main(int argc, char** argv) {
     // create image objects
     // OpenCV Transparent API way - UMat matrix used.
     // Options :
     // Convert Mat to UMat
+    double startT = (double)getTickCount();
+    cout << startT/getTickFrequency() << endl;
     Mat img, gray, edge_filtered,  gaussian_filtered;
     
     // read the image in color mode
     // copy the read image to img, OpenCV Transparent API way
-    imread(argv[1], IMREAD_COLOR).copyTo(img);
-    
+    imread(argv[1], IMREAD_COLOR).copyTo(img); 
     UMat img2 = convert_mat_UMat(img);
     cout << typeid(img2).name() << endl;
 
@@ -57,6 +68,9 @@ int main(int argc, char** argv) {
     imshow("gray", gray);
     
     imwrite("./images/edge_filtered_2.jpg", edge_filtered);
+    double endT = (double)getTickCount();
+    cout << endT/getTickFrequency()<< endl;
+    cout << "Time taken: " << (endT - startT)/getTickFrequency() << endl;
     waitKey(0);
     
 }
@@ -66,9 +80,9 @@ UMat convert_mat_UMat(Mat img) {
     return img.getUMat(ACCESS_FAST);
 }
 
-Umat convert_mat_UMat_copy(Mat img) {
+UMat convert_mat_UMat_copy(Mat img) {
     UMat umat;
-    mat.copyTo(umat);
+    img.copyTo(umat);
     return umat;
 }
 
