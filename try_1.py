@@ -32,11 +32,22 @@ def filter(img, original, threshold):
     # below threshold - black
     
     dest_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    list_ = []
+
+    cv2.imshow("dest_gray", dest_gray)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    for j in range(dest_gray.shape[1]):
+        for k in range(dest_gray.shape[0]):
+            list_.append(dest_gray[k][j])
+    
+    print(set(list_))
 
     for j in range(dest_gray.shape[1]):
         for k in range(dest_gray.shape[0]):
             if(dest_gray[k][j] < threshold):
-                print(dest_gray[k][j])
+                # print(dest_gray[k][j])
                 dest_gray[k][j] = 255
             else:
                 dest_gray[k][j] = 0
@@ -50,9 +61,10 @@ def filter(img, original, threshold):
     
 def main():
     img = sys.argv[1]
+    threshold = int(sys.argv[2])
     image = read_and_show(img) # reads and shows image at the same time. 
     # show_webcam() # mirroring is disabled as of now
-    filter(image, img, 200)
+    filter(image, img, threshold)
 
 if __name__ == '__main__':
     main()
