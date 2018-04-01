@@ -16,43 +16,44 @@ void removePepperNoise(Mat &mask);
 void draw_face(Mat dst);
 
 int main(int argc, char** argv) {
-    int cameraNo = 0; // default
-    if(argc > 1)
-        cameraNo = atoi(argv[1]); // convert character to int for cameraNo
-    // get access to camera
+    // int cameraNo = 0; // default
+    // if(argc > 1)
+    //     cameraNo = atoi(argv[1]); // convert character to int for cameraNo
+    // // get access to camera
     
-    VideoCapture camera;
-    camera.open(cameraNo);
+    // VideoCapture camera;
+    // camera.open(cameraNo);
 
-    if(!camera.isOpened()) {
-        cerr << "Error: Could not access camera/video" << endl;
+    // if(!camera.isOpened()) {
+    //     cerr << "Error: Could not access camera/video" << endl;
+    //     exit(1);
+    // }
+    // camera.set(CV_CAP_PROP_FRAME_WIDTH, 640);
+    // camera.set(CV_CAP_PROP_FRAME_WIDTH, 480);
+
+    // while(true) {
+    //     // grab next camera 
+    Mat cameraFrame = imread(argv[1], 1);
+    // Mat cameraFrame;
+    // camera >> cameraFrame;
+    if(cameraFrame.empty()) {
+        cerr << "ERROR: Couldn't grab a camera frame." << endl;
         exit(1);
     }
-    camera.set(CV_CAP_PROP_FRAME_WIDTH, 640);
-    camera.set(CV_CAP_PROP_FRAME_WIDTH, 480);
+    // create blank image that we will draw into
+    imshow("original", cameraFrame);
+    Mat displayedFrame(cameraFrame.size(), CV_8UC3); // 8 bit unsigned, 3 channels
+    // Mat newdisplayFrame(cameraFrame.size(), CV_8UC3);
+    cartoonifyImage(cameraFrame, displayedFrame, 0, 0);
+    // draw_face(displayedFrame);
+    // evilify(cameraFrame, newdisplayFrame);
 
-    while(true) {
-        // grab next camera 
-        Mat cameraFrame;
-        camera >> cameraFrame;
-        if(cameraFrame.empty()) {
-            cerr << "ERROR: Couldn't grab a camera frame." << endl;
-            exit(1);
-        }
-        // create blank image that we will draw into
-        imshow("original", cameraFrame);
-        Mat displayedFrame(cameraFrame.size(), CV_8UC3); // 8 bit unsigned, 3 channels
-        // Mat newdisplayFrame(cameraFrame.size(), CV_8UC3);
-        cartoonifyImage(cameraFrame, displayedFrame, 0, 0);
-        // draw_face(displayedFrame);
-        // evilify(cameraFrame, newdisplayFrame);
+    // imshow("Evilifier", newdisplayFrame);
+    imshow("Cartoonifier", displayedFrame);
 
-        // imshow("Evilifier", newdisplayFrame);
-        imshow("Cartoonifier", displayedFrame);
-
-        char keyPress = cvWaitKey(1); // wait 20 ms
-        if(keyPress == 27) { break; } // esc
-    } // end while
+    char keyPress = cvWaitKey(1); // wait 20 ms
+    if(keyPress == 27) { return 0; } // esc
+    // } // end while
 }
 // Showing user where to put face
 void draw_face(Mat dst) {
