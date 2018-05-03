@@ -1,0 +1,11 @@
+1) https://www.researchgate.net/post/How_can_we_measure_similarities_between_two_images
+2) https://ece.uwaterloo.ca/~z70wang/research/ssim/
+3) https://link.springer.com/chapter/10.1007%2F978-1-4471-2458-0_2
+4) https://ieeexplore.ieee.org/document/1284395/
+5) http://docdingle.com/teaching/cs545/assigns/cs545_A03_Compare.pdf
+6) https://arxiv.org/pdf/1710.02726.pdf
+7) https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_surf_intro/py_surf_intro.html
+8) http://note.sonots.com/SciSoftware/SIFT.html
+9) https://www.bc.edu/bc-web/schools/mcas/departments/computer-science.html
+10) https://ieeexplore.ieee.org/document/1453520/?arnumber=1453520&tag=1
+11) http://people.csail.mit.edu/torralba/code/spatialenvelope/s
