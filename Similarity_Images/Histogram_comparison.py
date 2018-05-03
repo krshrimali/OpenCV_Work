@@ -1,3 +1,5 @@
+# Resource: https://docs.opencv.org/3.1.0/d1/db7/tutorial_py_histogram_begins.html
+
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
@@ -37,23 +39,34 @@ def show(img, path=1):
     else:
         return img
 
-def draw_hist(img):
+def draw_hist(imgPath, img, full = None):
+    print("Drawing Histogram")
     print("You want histograms of R, G, B Channels in one image or separate?")
-    decide = input("separate or single? sep/sing ")
-    flag = []
+    decide = int(input("separate or single? 0/1 "))
+    flag = 0
     color = ('b', 'g', 'r')
     for i, col in enumerate(color):
-        hist = cv2.calcHist([img], [i], None, [256], [0,256])
+        hist = cv2.calcHist([img], [i], full, [256], [0,256])
         plt.plot(hist, color = col)
         plt.xlim([0, 256])
-        if(decide == "sep"):
+        if(decide == 0):
             plt.show()
-            flag.append(1)
-    if(len(flag) != 3):
+            plt.savefig(imgPath + '_' + col + '.png')
+            flag += 1
+            print(flag)
+    if(flag != 3):
         plt.show()
+        plt.savefig(imgPath + '.png')
 
 # number of image paths entered
 argc = len(sys.argv) - 1
+
+def create_mask(img):
+    mask = np.zeros(img.shape[:2], np.uint8)
+    mask[100:300, 100:400] = 255
+    masked_img = cv2.bitwise_and(img, img, mask = mask)
+    show(masked_img, 0)
+    draw_hist(img, mask)
 
 if(argc == 0):
     print("You have to enter image paths in order to view their histograms")
@@ -67,5 +80,10 @@ print("Number of images: " + str(argc))
 for i in range(argc):    
     print(sys.argv[i+1])
     img_path = path + sys.argv[i+1]
+    
+    print("Reading image: " + img_path)
+    
     img = show(img_path)
-    draw_hist(img)
+    draw_hist(img_path, img)
+    
+    # create_mask(img)
